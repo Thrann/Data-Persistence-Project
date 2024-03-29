@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -36,6 +37,9 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        DataManager.Instance.LoadHighscore();
+        HighScoreText.text = "Best Score: " + DataManager.Instance.highScoreName + " - " + DataManager.Instance.highScore;
     }
 
     private void Update()
@@ -72,5 +76,13 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        
+
+        if (m_Points > DataManager.Instance.highScore)
+        {
+            HighScoreText.text = "Best Score: " + DataManager.Instance.playerName + " - " + m_Points;
+            DataManager.Instance.highScore = m_Points;
+            DataManager.Instance.SaveHighscore();
+        }
     }
 }
